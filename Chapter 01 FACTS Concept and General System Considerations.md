@@ -737,7 +737,7 @@ IGBT stands for Insulated Gate Bipolar Transistor. An IGBT is also a three termi
 	</figcaption>
 </figure>
 
-
+<center>
 |  	    | Thyristor | GTO | BJT | MOSFET | IGBT |
 |:---------:|:----------:|:----------:|:----------:|:----------:|:----------:|
 | Availability | Early 60s | Mid 80s | Late 70s | Early 80s | Late 80s |
@@ -747,6 +747,7 @@ IGBT stands for Insulated Gate Bipolar Transistor. An IGBT is also a three termi
 | On-state voltage drop | 2V | 2-3V | 1-2V | I*Rds(on) 4.5V | 2-3V |
 | Drive Circuit | Simple | Very difficult | Difficult | Very simple | Very simple |
 | Comments | Cannot turn-off using gate signals | King in very high power | Phasing out in new products | Good performance in high frequency | Best overall performance |
+</center>
 
 <center><b>Table comparing different types of power electronic devices based on various parameters</b></center>
 
