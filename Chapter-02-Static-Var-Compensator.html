@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chapter 02: Static Var Compensators</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+	window.MathJax = {
+	  tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']]
+	  }
+	};
+</script>
+
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="chapter-02-static-var-compensator">Chapter 02 Static Var Compensator</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#introduction">Introduction</a>
+<ul>
+<li><a href="#power-transfer-from-power-source-to-a-resistive-load-steady-state">Power Transfer from Power Source to a Resistive Load (Steady State)</a>
+<ul>
+<li><a href="#simple-lossless-transmission-line-with-resistive-load">Simple Lossless Transmission Line with Resistive Load</a></li>
+<li><a href="#active-and-reactive-power-against-load-current">Active and Reactive Power Against Load Current</a></li>
+<li><a href="#transmitted-power-versus-receiving-end-voltage-with-a-resistive-load">Transmitted Power Versus Receiving-End Voltage with a Resistive Load</a></li>
+<li><a href="#transmitted-power-versus-receiving-end-voltage-with-different-power-factor-loads">Transmitted Power Versus Receiving-End Voltage with Different Power Factor Loads</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#transient-stability-of-power-systems-dynamics">Transient Stability of Power Systems (Dynamics)</a>
+<ul>
+<li><a href="#power-angle-curve">Power Angle Curve</a></li>
+<li><a href="#equal-area-criterion">Equal Area Criterion</a></li>
+<li><a href="#powerangle-curves-with-synchronous-compensator">Power/Angle Curves with Synchronous Compensator</a></li>
+</ul>
+</li>
+<li><a href="#principles-of-operation-of-svc">Principles of Operation of SVC</a>
+<ul>
+<li><a href="#thyristor-controlled-reactor-tcr">Thyristor Controlled Reactor (TCR)</a></li>
+<li><a href="#thyristor-switched-capacitor-tsc">Thyristor-Switched Capacitor (TSC)</a></li>
+</ul>
+</li>
+<li><a href="#description-and-functions-of-svcs">Description and Functions of SVCs</a>
+<ul>
+<li><a href="#svc-schematic-diagram">SVC Schematic Diagram</a></li>
+<li><a href="#silves-svc-single-line-diagram">Silves SVC Single Line Diagram</a></li>
+<li><a href="#svc-operation">SVC Operation</a></li>
+</ul>
+</li>
+<li><a href="#v-i-characteristic-of-an-svc">V-I characteristic of an SVC</a>
+<ul>
+<li><a href="#svc-characteristic">SVC characteristic</a></li>
+<li><a href="#system-load-characteristic">System load characteristic</a></li>
+</ul>
+</li>
+<li><a href="#analysis-of-svc">Analysis of SVC</a>
+<ul>
+<li><a href="#importance-of-svc-location">Importance of SVC Location</a></li>
+<li><a href="#voltage-variation-in-transmission-line">Voltage Variation in Transmission Line</a></li>
+<li><a href="#control-characteristic-of-svc">Control Characteristic of SVC</a></li>
+<li><a href="#system-characteristic">System Characteristic</a></li>
+<li><a href="#power-angle-curve-1">Power Angle Curve</a></li>
+</ul>
+</li>
+<li><a href="#application-of-svcs">Application of SVCs</a>
+<ul>
+<li><a href="#practical-examples-svc">Practical examples SVC</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<h3 id="power-transfer-from-power-source-to-a-resistive-load-steady-state">Power Transfer from Power Source to a Resistive Load (Steady State)</h3>
+<h4 id="simple-lossless-transmission-line-with-resistive-load">Simple Lossless Transmission Line with Resistive Load</h4>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-01.svg" alt="r" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<p>The power transferred to a resistive load can be calculated using the following equations:</p>
+<p>$$S_{R}=V_{R}\biggl[\frac{V_{S}-V_{R}}{j X}\biggr]^{<em>}=V_{R}\biggl[\frac{V_{S}\cos\delta+j V_{S}\sin\delta-V_{R}}{j X}\biggr]^{</em>}$$
+$$P={\frac{V_{R}V_{S}}{X}}\sin\delta$$</p>
+<h4 id="active-and-reactive-power-against-load-current">Active and Reactive Power Against Load Current</h4>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-02.svg" alt="r" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<h4 id="transmitted-power-versus-receiving-end-voltage-with-a-resistive-load">Transmitted Power Versus Receiving-End Voltage with a Resistive Load</h4>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-03.svg" alt="r" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<p>The above figure shows the relationship between the load voltage $V_R$ and the transmitted power $P$. It is important for the stable operation of a system that voltages at load points should not be allowed to drop very far below the nominal value.</p>
+<p>As the load increases, the rate at which the load voltage decreases becomes more rapid, eventually leading to a complete collapse of the load voltage when it reaches the nose of the curve. The load characteristic is unstable beyond the nose, and consequently the transferred power drops to zero. This kind of voltage instability is more prone to occur in systems with large inductive impedances.</p>
+<p>It can be exacerbated by loads that tend to consume constant active and reactive power irrespective of the magnitude of their applied voltage. Loads of this kind include those that are supplied by transformers with on-load tap changers, when the tap changers have an automatic control that attempts to maintain a constant secondary voltage.</p>
+<h4 id="transmitted-power-versus-receiving-end-voltage-with-different-power-factor-loads">Transmitted Power Versus Receiving-End Voltage with Different Power Factor Loads</h4>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-04.svg" alt="r" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<p>The above figure shows a family of voltage-load curves for different power factor loads, including the unity power factor case.</p>
+<p>When the load current has a power factor less than one, it contains a lagging component. In that case, the maximum power capability will be smaller, and the voltage for a given load will be reduced compared with the unity power factor load.</p>
+<p>For a particular power factor curve and for any power less than the maximum, there are two possible operating points. Only the upper, stable values represent possible system operating conditions.</p>
+<p>However, if the load is increased or the power factor is decreased, the operating point moves toward the “nose” of the curve with a progressive reduction of voltage, which then tends toward a complete collapse of the load transmission.</p>
+<p>The operating points shown in the figure are stable because $dV_R/dP$ is negative, which means that an increased load will reduce the operating voltage and vice versa for a reduced load. The operating points that are not possible are those where $dV_R/dP$ becomes positive and the system will collapse.</p>
+<p>It is clear from the curves with reduced power factor that a transmission line has a very limited capacity to carry any lagging reactive component of load, but the figure also shows an interesting result for a load with a leading power factor. This has the double advantage of increasing both the load voltage and the maximum power that can be transferred.</p>
+<h2 id="transient-stability-of-power-systems-dynamics">Transient Stability of Power Systems (Dynamics)</h2>
+<h3 id="power-angle-curve">Power Angle Curve</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-05.svg" alt="r" width="480">
+	<figcaption><b>Power angle curve</b></figcaption>
+</figure>
+<p>The power transferred to a resistive load can be calculated using the following equations:</p>
+<p>$$p={\frac{V^{2}}{X_{L}}}\sin\delta$$</p>
+<p>The mechanical swing equation for this condition is:</p>
+<p>$$\frac{2H}{\omega_{0}}\frac{d^{2}\delta}{d t^{2}}=P_{m}-P_{\mathrm{max}}\sin\delta$$</p>
+<p>where:</p>
+<ul>
+<li>$H$ is the inertia constant defined as the kinetic energy in watt-seconds at rated speed divided by the machine’s VA. base rating.</li>
+<li>$\omega_{0}$ is the nominal power system frequency in mechanical radians per second.</li>
+<li>$P_m$ is the mechanical input power to the machine.</li>
+<li>$P_{max}$ is the maximum output power at $\delta$ equal to $90°$.</li>
+</ul>
+<h3 id="equal-area-criterion">Equal Area Criterion</h3>
+<p>A key concept to illustrate the stability of a single machine or a group of machines swinging together (modal equivalent) is <strong>the equal area criterion</strong>.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-07.svg" alt="r" width="480">
+	<figcaption><b>Equal area criterion</b></figcaption>
+</figure>
+<p>In order for a system to recover its normal operation after any disturbance, the mechanical power input and the electric power loads have to balance after some finite time.</p>
+<h3 id="powerangle-curves-with-synchronous-compensator">Power/Angle Curves with Synchronous Compensator</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-08.svg" alt="r" width="480">
+	<figcaption><b>Power/angle curves with synchronous compensator connected to the midpoint of a line</b></figcaption>
+</figure>
+<h2 id="principles-of-operation-of-svc">Principles of Operation of SVC</h2>
+<h3 id="thyristor-controlled-reactor-tcr">Thyristor Controlled Reactor (TCR)</h3>
+<p>The TCR is a nonlinear susceptance that can be controlled by the firing angle α of the antiparallel connected thyristor valves, with the firing angle always being delayed relative to its natural voltage zero-crossing.</p>
+<p>The TCR susceptance B as a function of the firing angle α is given as follows:</p>
+<p>$$B={\frac{2(\pi-\alpha)+{{{sin}}{(2\alpha)}}}{\pi}}\ \ {\mathrm{pu}}$$</p>
+<p>By varying the firing angle α from 90 to 180 electrical degrees, it is possible to change the TCR susceptance from its rated susceptance $(B=1/(ωL))$ or 1 pu to zero, i.e., an open circuit. Therefore, seen from the fundamental frequency points of view, a TCR susceptance can be continuously controllable from zero up to 1 pu.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-11.svg" alt="r" width="480">
+	<figcaption><b>Voltage and currents at firing angles of α = 90 and 120 electrical degrees</b></figcaption>
+</figure>
+<h3 id="thyristor-switched-capacitor-tsc">Thyristor-Switched Capacitor (TSC)</h3>
+<p>The TSC susceptance is not continuously controllable, as is the TCR, but it is switchable each time its current passes zero, i.e., when its voltage is at a peak or if the capacitor is already charged, when the voltage across the thyristor switch is zero or at a minimum. Operating this way, it generates no harmonic currents, since the TSC stops conducting at current zero-crossing, which means a firing angle of 90 electrical degrees, and again may resume conduction when the voltage across the thyristor switch is zero.</p>
+<p>The following figure illustrates the operation of a TSC with a binary control logic on/off.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-12.svg" alt="r" width="480">
+	<figcaption><b>Binary logic of switch-off and switch-on of a TSC</b></figcaption>
+</figure>
+<p>In normal operation, when voltages change relatively slowly, the TSC is typically switched on for a relatively long period of time and then off for a long period time, i.e., the TSC valve conducts continuously during the on-state creating a fully sinusoidal waveshape, and this figure only demonstrates the voltage and current waveshapes at turn on and turn off for one valve direction. However, the significance of the TSC switching performance is that it can be switched in and out in a rapid sequence, which enables the TSC to be used for damping control by using a bang-bang control function. This is an advantage over a mechanically switched capacitor, which can be inserted but not be quickly disconnected and reinserted to provide damping.</p>
+<h2 id="description-and-functions-of-svcs">Description and Functions of SVCs</h2>
+<p>The Static Var Compensator (SVC) is the most commonly applied FACTS shunt controller. It is capable of absorbing or generating reactive power to control the magnitude of the system voltage to a preset level. The reactive power output of the SVC can be changed very rapidly and very often, making it advantageous to the AC system during and after faults in the network. It can decrease any overvoltages and increase the voltage during undervoltage conditions, helping other essential equipment in the AC network stay connected during the transient and dynamic periods that follow recovery from faults in the network.</p>
+<p>There are many different SVC configurations, but most of them use thyristor controlled reactors (TCR), thyristor-switched capacitors (TSC), harmonic filters, and/or breaker switched or fixed capacitors as basic branches.</p>
+<h3 id="svc-schematic-diagram">SVC Schematic Diagram</h3>
+<p>A generic and detailed SVC schematic diagram is shown below:</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-36.png" alt="" width="480">
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-09.svg" alt="" width="500">
+			<figcaption><b>Generic schematic diagram of an SVC using TCR and TSC</b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<h3 id="silves-svc-single-line-diagram">Silves SVC Single Line Diagram</h3>
+<p>An actual single line diagram for the Silves SVC in the Northern Brazil can be seen below (Tenório et al. 2016):</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-10.svg" alt="r" width="480">
+	<figcaption><b>Single line diagram for Silves SVC in the 500 kV network in Northern Brazil</b></figcaption>
+</figure>
+<h3 id="svc-operation">SVC Operation</h3>
+<p>The TCRs are controlled continuously to provide inductive reactive power in order to keep the voltage at a preset value. When an overvoltage occurs, the TCRs decrease their firing angle to control the voltage within the operating voltage band, and the TSCs are switched off, if required. If the overvoltage is severe, the TCRs are put in full conduction in such a way as to help the system recover the voltage to a preset band.</p>
+<p>When an undervoltage occurs, the TSCs are switched on, and TCRs increase their firing angle up to a point where they cease conducting if the voltage is severely depressed. The capacitive rating is reached with two TSCs and two single-tuned harmonic filters.</p>
+<p>The harmonic filters are continuously in operation. Therefore, they should be considered when designing the inductive rating, which is reached with two TCRs and two single-tuned harmonic filters.</p>
+<h2 id="v-i-characteristic-of-an-svc">V-I characteristic of an SVC</h2>
+<p>In the previous section, we discussed two cases:</p>
+<ul>
+<li>
+<p>When an overvoltage occurs, the TCRs decrease their firing angle to control the voltage within the operating voltage band, and the TSCs are switched off.</p>
+</li>
+<li>
+<p>When an undervoltage occurs, the TSCs are switched on, and TCRs increase their firing angle up to a point where they cease conducting.</p>
+</li>
+</ul>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-13.svg" alt="r" width="480">
+	<figcaption><b>An SVC in closed loop control using an Automatic Voltage Regulator (AVR)</b></figcaption>
+</figure>
+<h3 id="svc-characteristic">SVC characteristic</h3>
+<p>An SVC is a variable susceptance source of reactive power and typically has a steady-state characteristic as shown in the V-I characteristic curve below.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-14.svg" alt="r" width="480">
+	<figcaption><b>V-I characteristic of an SVC (seen from high-voltage side)</b></figcaption>
+</figure>
+<p>If the system voltage is less than Vref, more capacitive current will be drawn by the SVC until it reaches maximum $I_C$ ($α=180$ of TCR and $T_{off}=0$ of TSC). If the system voltage is greater than Vref, more inductive current will be drawn by the SVC until it reaches maximum IL ($α=90$ of TCR and $T_{on}=0$ of TSC).</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-15.svg" alt="r" width="480">
+	<figcaption><b>SVC characteristic curve</b></figcaption>
+</figure>
+<h3 id="system-load-characteristic">System load characteristic</h3>
+<p>If the system load is more inductive, then the current of the load increases (inductive load current), and the system voltage will be decreased. If the system load is more capacitive, then the current of the load increases (capacitive load current), and the system voltage will be increased.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-16.svg" alt="r" width="480">
+	<figcaption><b>System load characteristic curve</b></figcaption>
+</figure>
+<p>The SVC has a straight line characteristic in the V-I plane, with its slope slightly increased to ensure that the two characteristics, i.e., the system load (blue trace) and the SVC output (red-green traces), always have an interception point in the output range. The added inclination to the SVC characteristic is commonly called the slope or current droop, and it is usually expressed in percentage of the rated power of the SVC.</p>
+<p>It can be expressed and seen from either the high-voltage side (system side) or the low voltage side (SVC side). The interception of the two characteristics defines the operating point of the SVC as indicated by the coordinates ($I_0$, $V_0$).</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-13.svg" alt="" width="360">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-14.svg" alt="" width="400">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<p>If the system voltage is reduced as a result of sudden inductive load increase, the operating point will be transferred to the capacitive region of the SVC.</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-13.svg" alt="" width="360">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-17.svg" alt="" width="400">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<p>If the system voltage is increased as a result of sudden capacitive load increase, the operating point will be transferred more in the inductive region of the SVC.</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-13.svg" alt="" width="360">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-18.svg" alt="" width="400">
+			<figcaption><b></b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<p>The SVC response time depends on the strength of the system. However, typical response times specified for 60 Hz systems during a step response are as follows:</p>
+<ul>
+<li>33 msec for rise time (2 cycle)</li>
+<li>100 msec for settling time (6 cycle)</li>
+</ul>
+<p>Reactive power characteristics of SVC vs connection point voltage are shown in the following tables:</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-20.png" alt="" width="360">
+			<figcaption><b>I-V characteristic</b></figcaption>
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-21.png" alt="" width="400">
+			<figcaption><b>Q-V characteristic</b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<center>
+<p><em><strong>V-I Characteristics of SVC, on a per unit basis</strong></em></p>
+</center>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-15.svg" alt="" width="480">
+			<figcaption><b>Steady-state characteristic</b></figcaption>
+		</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+			<img src="img/ch3-20.png" alt="" width="360">
+			<figcaption><b>Transient characteristic</b></figcaption>
+		</figure></td>
+	</tr>
+</table>
+<center>
+<p><em><strong>Typical voltage vs reactive power characteristics of SVC, on a per unit basis</strong></em></p>
+</center>
+<h2 id="analysis-of-svc">Analysis of SVC</h2>
+<h3 id="importance-of-svc-location">Importance of SVC Location</h3>
+<p>The location of SVC is important in determining its effectiveness. Ideally, it should be located at the electrical center of the system or midpoint of a transmission line.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-23.png" alt="r" width="480">
+	<figcaption><b>A transmission line with SVC connected at midpoint</b></figcaption>
+</figure>
+<h3 id="voltage-variation-in-transmission-line">Voltage Variation in Transmission Line</h3>
+<p>For example, consider a symmetric lossless transmission line with SVC connected at the midpoint.
+Without SVC, the voltage at the midpoint is given by,</p>
+<p>$$V_{m o}={\frac{V\cos\delta/2}{\cos\theta/2}}$$</p>
+<p>where $θ = β1, 1$ is the length of the line and $β$ is the phase constant given by</p>
+<p>$$\beta=\omega\sqrt{l c}=2\pi f\sqrt{l c}$$</p>
+<p>where $l$ and $c$ are positive sequence inductance and capacitance of the line per unit length, $f$ is the operating frequency.</p>
+<p>It can be shown that the voltage variation in the line (due to variation in $δ$) is maximum at the midpoint.</p>
+<h3 id="control-characteristic-of-svc">Control Characteristic of SVC</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-25.png" alt="" width="480">
+	<figcaption><b>Control characteristic of SVC</b></figcaption>
+</figure>
+<p>$$I_{S V C}=-B_{S V C}V_{S V C}$$</p>
+<p>SVC helps to limit the variation by suitable control. The steady state control characteristics of SVC is shown where</p>
+<ul>
+<li>ADB is the control range.</li>
+<li>OA represents the characteristic where the SVC hits the capacitor limit,</li>
+<li>BC represents the SVC at its inductor limit.</li>
+</ul>
+<p>SVC current is considered positive when SVC susceptance is inductive.</p>
+<p>The slope of OA is BC (susceptance of the capacitor).</p>
+<p>The slope of OBC is BL (susceptance of the reactor).</p>
+<p>A positive slope (in the range of 1-5%) is given in the control range to</p>
+<ol>
+<li>Enable parallel operation of more than one SVC connected at the same or neighboring buses and</li>
+<li>Prevent SVC hitting the limits frequently</li>
+</ol>
+<p>The steady state value of the SVC bus voltage is determined from the intersection of the system characteristic and the control characteristic.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-26.png" alt="" width="480">
+	<figcaption><b>Determination of operating point of SVC</b></figcaption>
+</figure>
+<h3 id="system-characteristic">System Characteristic</h3>
+<p>The system characteristic is a straight line with negative slope and is defined by</p>
+<p>$$V_{S V C}=V_{T h}-X_{T h}I_{S V C}$$</p>
+<p>$P_0$ is the power flow in the line without SVC and $P_1$ is the power flow in the line when SVC maintains a constant voltage V at the midpoint of the line</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-24.png" alt="" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<p>$$P_{0}={\frac{V^{2}}{X_{L}}}\sin\delta,$$</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-23.png" alt="" width="480">
+	<figcaption><b></b></figcaption>
+</figure>
+<p>$$P_{1}=2\frac{V^{2}}{X_{L}}\sin\delta/2$$</p>
+<h3 id="power-angle-curve">Power Angle Curve</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-37.jpg" alt="" width="480">
+	<figcaption><b>Power angle curve of a single-machine infinite-bus system</b></figcaption>
+</figure>
+<p>a) Uncompensated</p>
+<p>b) Ideal midpoint SVC unlimited rating curve</p>
+<p>c) Fixed capacitor connected at its midpoint</p>
+<p>d) Midpoint SVC limited rating curve</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-27.png" alt="" width="480">
+	<figcaption><b>Plot of Power Vs – δ</b></figcaption>
+</figure>
+<p>a) Practical SVC at midpoint with limitedrating</p>
+<p>b) Uncompensated</p>
+<h2 id="application-of-svcs">Application of SVCs</h2>
+<p>SVCs can strongly improve the performance of AC grids by using its ability to inject or draw reactive power into or from the network. The following describes some features that may be specified for SVCs.</p>
+<ul>
+<li>Control of Over voltages in AC Grids</li>
+<li>Voltage Regulation and Reactive Power Supply for the AC Grid</li>
+<li>SVCs Operating in Close Proximity to Other SVCs</li>
+</ul>
+<h3 id="practical-examples-svc">Practical examples SVC</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-28.png" alt="" width="480">
+	<figcaption><b>Single-line diagram of Nemiscau SVC</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-30.png" alt="" width="480">
+	<figcaption><b>Aerial view of Nemiscau SVCs</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-31.png" alt="" width="480">
+	<figcaption><b>Viklandet SVC station</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-32.png" alt="" width="700">
+	<figcaption><b>Single-line diagram for Tunnsjødal SVC</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-34.png" alt="" width="480">
+	<figcaption><b>Valve hall with TCR and TSC valves at Tunnsjødal SVC station</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-35.png" alt="" width="700">
+	<figcaption><b>Single-line diagram (SLD) of HHR SVCs</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-33.png" alt="" width="480">
+	<figcaption><b>HHR SVC transformers and 380 kV switchgear and TSC capacitor sunshades</b></figcaption>
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch3-37.png" alt="" width="480">
+	<figcaption><b>Crane SVC (left) and Bluff Creek SVC (right)</b></figcaption>
+</figure>
+
+</body>
+</html>

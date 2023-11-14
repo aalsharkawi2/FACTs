@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chapter 01: FACTs Concept and General System Considerations</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+	window.MathJax = {
+	  tex: {
+		inlineMath: [['$', '$'], ['\\(', '\\)']]
+	  }
+	};
+</script>
+
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="chapter-01-facts-concept-and-general-system-considerations">Chapter 01: FACTS Concept and General System Considerations</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#transmission-interconnections">Transmission Interconnections</a>
+<ul>
+<li><a href="#advantages-of-transmission-line-interconnections">Advantages of transmission line interconnections</a></li>
+<li><a href="#disadvantages-of-transmission-line-interconnections">Disadvantages of transmission line interconnections</a></li>
+</ul>
+</li>
+<li><a href="#flow-of-power-in-an-ac-system">Flow of Power in an AC System</a>
+<ul>
+<li><a href="#cases-of-load-flow">Cases of load flow</a></li>
+</ul>
+</li>
+<li><a href="#limits-of-tl-loading-capability">Limits of the Loading Capability</a>
+<ul>
+<li><a href="#thermal">Thermal</a></li>
+<li><a href="#dielectric">Dielectric</a></li>
+<li><a href="#stability">Stability</a></li>
+</ul>
+</li>
+<li><a href="#power-flow-and-dynamic-stability">Power Flow and Dynamic Stability Considerations of a Transmission Interconnection</a></li>
+<li><a href="#basic-types-of-facts-controllers">Basic Types of FACTs Controllers</a>
+<ul>
+<li><a href="#series-controllers">Series Controllers</a></li>
+<li><a href="#shunt-controllers">Shunt Controllers</a></li>
+<li><a href="#combined-series-series-controllers">Combined series-series controllers</a></li>
+<li><a href="#combined-series-shunt-controllers">Combined series-shunt controllers</a></li>
+<li><a href="#thyristor-controlled-reactor-tcr">Thyristor controlled Reactor (TCR)</a></li>
+<li><a href="#thyristor-switched-reactor-tsr">Thyristor Switched Reactor (TSR)</a></li>
+<li><a href="#thyristor-switched-capacitor-tsc">Thyristor Switched Capacitor (TSC)</a></li>
+<li><a href="#static-var-compensator">Static Var Compensator</a></li>
+<li><a href="#statcom">STATCOM</a></li>
+<li><a href="#thyristor-controlled-series-capacitor-tcsc">Thyristor Controlled Series Capacitor (TCSC)</a></li>
+<li><a href="#thyristor-controlled-series-reactor-tcsr">Thyristor Controlled Series Reactor (TCSR)</a></li>
+<li><a href="#thyristor-switched-series-reactor-tssr">Thyristor Switched Series Reactor (TSSR)</a></li>
+<li><a href="#static-series-synchronous-compensator-sssc">Static Series Synchronous Compensator (SSSC)</a></li>
+<li><a href="#unified-power-flow-controller-upfc">Unified Power Flow Controller (UPFC)</a></li>
+<li><a href="#interline-power-flow-controller-ipfc">Interline Power Flow Controller (IPFC)</a></li>
+</ul>
+</li>
+<li><a href="#power-electronics-in-facts">Power Electronics in FACTs</a>
+<ul>
+<li><a href="#thyristor">Thyristor</a></li>
+<li><a href="#thyristor-and-gto">Thyristor and GTO</a>
+<ul>
+<li><a href="#turn-on-operation">Turn-On Operation</a></li>
+<li><a href="#turn-off-operation">Turn-Off Operation</a></li>
+<li><a href="#comparison-with-thyristor">Comparison with Thyristor</a></li>
+</ul>
+</li>
+<li><a href="#bjt-and-igbt">BJT and IGBT</a>
+<ul>
+<li><a href="#bjt">BJT</a></li>
+<li><a href="#igbt">IGBT</a></li>
+</ul>
+</li>
+<li><a href="#comparisons">Comparisons</a></li>
+</ul>
+</li>
+<li><a href="#practical-cases">Practical Cases</a></li>
+</ul>
+<h2 id="transmission-interconnections">Transmission Interconnections</h2>
+<p>Most if not all of the world's electric power supply systems are
+widely interconnected, involving connections:</p>
+<ul>
+<li>Inside utilities' own territories which extend to</li>
+<li>Inter-utility interconnections and then to</li>
+<li>Inter-regional and</li>
+<li>International connections.</li>
+</ul>
+<p>This is done for <strong>economic reasons</strong>, to reduce the cost of
+electricity and to improve reliability of power supply.</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><img src="img/ch2-01.webp" alt="Radial System" width="480"></td>
+		<td><img src="img/ch2-02.png" alt="Interconnectrd System" width="480"></td>
+	</tr>
+	<tr>
+		<td style="text-align:center"><b>Radial System</b></td>
+		<td style="text-align:center"><b>Interconnectrd System</b></td>
+	</tr>
+</table>
+<h3 id="advantages-of-transmission-line-interconnections">Advantages of transmission line interconnections</h3>
+<ul>
+<li>
+<p><strong>Capital cost reduction</strong></p>
+<blockquote>
+<p>In an incremental system, it is possible to have larger generators rating because excess capacity of a'station may be utilized by the areas fed by other station’s as <strong>the size of the generator increases the capital Cost per kW reduce.</strong> Therefore, a saving is achieved capital cost. it is most useful advantages of interconnected system.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Installed Capacity Saving</strong></p>
+<blockquote>
+<p>An interconnection is likely to decrease the installed capacity need to meet the load requirement. In majority of cases, it happens that <strong>the maximum demand of one area does not coincide with the maximum demand of another area.</strong> This could be because in one agea the major load is the industrial load while, in the other it is residential and commercial. If two such areas are interconnected, the diversity of load would cause the maximum combined demand to be less than the sun of the individual maximum demand.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Operating Savings</strong></p>
+<blockquote>
+<p>When two different utilities are operating separately, each would run its units most economically. however, when the two are interconnected and the optimum scheduling is decided for the combined system, the operating costs are likely to decrease. Thus, energy interchanges between the^wo would result in saving for both. It is basic interconnected power system advantages.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Increase in Service Reliability</strong></p>
+<blockquote>
+<p>Every equipment is prone to putage during its operation. System interconnection leads to increase in reliability of electric supply, in the event of one utility falling short of generation, due to forced outage of generator or unexpected increase in demand, another utility of the pool can come to its rescue by making its surplus power available. An interconnection between the local transmission systems of two utility can lead to an increase in service reliability at considerably less expense than that which both would have to incur in the construction of additional lines. When the lines are fed from more than one-generation source, the reliability is still further improved.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Decrease in Spinning Reserve Requirements</strong></p>
+<blockquote>
+<p>Every utility has to keep some generation capacity as reserve to take into account of capacity reduction due to forced outage and scheduled maintenance. as a thumb rule, a capacity equal to the capacity of the largest unit is kept as reserve. When two systems operate separately, each has to maintain a separate reserve capacity. If they are interconnected, it may be sufficient to have a smaller total reserve for the combine system for the same degree and reliability.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Addition and Replacement of Transmission Facilities</strong></p>
+<blockquote>
+<p>Load growth necessitates additionl transmission facilities the questions like cost or right of way and installation of line and the Territory to be served can be more economically and easily decided when bmore than one utility is involved. The utilities can share the cost and use of the lines. This would evidently lead to optimum use of facilities.</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="disadvantages-of-transmission-line-interconnections">Disadvantages of transmission line interconnections</h3>
+<ul>
+<li>
+<p><strong>Expensive Circuit Breakers</strong></p>
+<blockquote>
+<p>Interconnection causes larger curents to flow on the transmission lines under faulty condition with a consequent Increase in capacity of circuit breakers therefore, expensive circuit breakers are required with interconnected system.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Expensive tie Lines</strong></p>
+<blockquote>
+<p>Interconnection of generating station involves expenses for construction of interconnecting transmission line between generating stations or arias. These lines are called tie lines.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Synchronizing Problem</strong></p>
+<blockquote>
+<p>The generators of al£ the inter-connected generating stations must operate at all same frequency and in a synchronized manner.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Inadequate Transmission Facilities</strong></p>
+<blockquote>
+<p>The transmission system has not been strengthened to proper level. This has resulted in problem of power evaluation from large pithead super thermal station. Additional investment in transmissioin system is needed. There should be adequate redundancy in transmission system for satisfactory operation of grid.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Metering and Instrumentation</strong></p>
+<blockquote>
+<p>Adequate metering and instrumentation is needed at different level. It is necessary to install sequential recorders, disturbance recorders, time of day meters etc.</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="flow-of-power-in-an-ac-system">Flow of Power in an AC System</h2>
+<p>In ac power systems, given the insignificant electrical storage, the electrical generation and load must balance at all times.</p>
+<figure style="margin: 20px auto; text-align: center;">
+    <img src="img/ch2-03.png" alt="Flow of Power" width="480">
+    <figcaption><b>Flow of Power</b></figcaption>
+</figure>
+<blockquote>
+<p>To some extent, the electrical system is self-regulating.</p>
+</blockquote>
+<p>If generation is less than load, the voltage and frequency drop, and thereby the load, goes down to equal the generation minus the transmission losses.</p>
+<blockquote>
+<p>However, there is only a few percent margin for such a self-regulation.</p>
+</blockquote>
+<p><em>What happened if exceeding the margin of self-regulation?</em></p>
+<ul>
+<li>If voltage is propped up with reactive power support, then the load will go up, and consequently frequency will keep dropping, and the system will collapse.</li>
+<li>Alternately, if there is inadequate reactive power, the system can have voltage collapse.</li>
+</ul>
+<p><strong>Solutions</strong></p>
+<ul>
+<li>Parallel circuits</li>
+<li>Meshed circuits</li>
+<li>Interconnected system</li>
+</ul>
+<h3 id="cases-of-load-flow">Cases of load flow</h3>
+<p>Consider power flow through two parallel paths (possibly corridors of several lines) from a surplus generation area, shown as an equivalent generator on the left, to a deficit generation area on the right.</p>
+<figure style="margin: 20px auto; text-align: center;">
+    <img src="img/ch2-04.png" alt="case (a)" width="480">
+    <figcaption><b>(a) ac power flow with parallel paths</b></figcaption>
+</figure>
+<ul>
+<li>Without any control, power flow is based on the inverse of the various transmission line impedances.</li>
+<li>The lower impedance line may become overloaded.</li>
+</ul>
+<p>The same two paths, but one of these has HVDC transmission.</p>
+<figure style="margin: 20px auto; text-align: center;">
+    <img src="img/ch2-05.png" alt="case (b)" width="480">
+    <figcaption><b>(b) power flow control with HVDC</b></figcaption>
+</figure>
+<ul>
+<li>With HVDC, power flows as ordered by the operator, because with HVDC power electronics converters power is electronically controlled.</li>
+<li>Also, because power is electronically controlled, the HVDC line can be used to its full thermal capacity if adequate converter capacity is provided.</li>
+</ul>
+<p>As alternative FACTS Controllers, the following figures show one of the transmission lines with different types of series type FACTS Controllers.</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><img src="img/ch2-06.png" alt="case (c)" width="480"></td>
+	</tr>
+	<tr>
+		<td style="text-align:center"><b>(c) power flow control with variable impedance</b></td>
+	</tr>
+	<tr>
+		<td><img src="img/ch2-07.png" alt="case (d)" width="480"></td>
+	</tr>
+	<tr>
+		<td style="text-align:center"><b>(d) power flow control with variable phase angle</b></td>
+	</tr>
+</table>
+<ul>
+<li>By means of controlling impedance (c) or phase angle (d), a FACTS controller can control the power flow as required.</li>
+</ul>
+<blockquote>
+<p>Suppose the lines AB, BC, and AC have continuous ratings of 1000 MW, 1250 MW, and 2000 MW, respectively, and have emergency ratings of twice those numbers for a sufficient time to allow rescheduling of power in case of loss of one of these lines.</p>
+</blockquote>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>If one of the generators is generating 2000 MW and the other 1000 MW, a total of 3000 MW would be delivered to the load center. For the impedances shown, the three lines would carry 600, 1600, and 1400 MW, respectively, as shown in Figure (a).</p>
+<figure style="margin: 20px auto; text-align: center;">
+<img src="img/ch2-08.png" alt="case (a)" width="480">
+<figcaption><b>(a) system diagram</b></figcaption>
+</figure>
+<p>Such a situation would overload line BC (loaded at 1600 MW for its continuous rating of 1250 MW), and therefore generation would have to be decreased at B, and increased at A, in order to meet the load without overloading line BC.</p>
+</div>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>If a capacitor whose reactance is - 5 ohms is inserted to line AC Figure (b), it reduces the line’s impedance from 10 Q to 5 Q, so that power flow through the lines AB, BC, and AC will be 250,1250, and 1750 MW, respectively.</p>
+<figure style="margin: 20px auto; text-align: center;">
+  <img src="img/ch2-09.png" alt="case (b)" width="480">
+  <figcaption><b>(b) system diagram with Thyristor-Controlled Series Capacitor in line AC</b></figcaption>
+</figure>
+It is clear that if the series capacitor is adjustable, then other power-flow levels may be realized in accordance with the ownership, contract, thermal limitations, transmission losses, and a wide range of load and generation schedules.
+</div>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>Similar results may be obtained by increasing the impedance of one of the lines in the same meshed configuration by inserting a7 Q reactor (inductor) in series with line AB Figure (c).</p>
+<figure style="margin: 20px auto; text-align: center;">
+  <img src="img/ch2-10.png" alt="case (c)" width="480">
+  <figcaption><b>(c) system diagram with Thyristor-Controlled Series Reactor in line BC</b></figcaption>
+</figure>
+Again, a series inductor that is partly mechanically and partly thyristorcontrolled, it could serve to adjust the steady-state power flows as well as damp unwanted oscillations.
+</div>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>As another option, a thyristor-controlled phase-angle regulator could be installed instead of a series capacitor or a series reactor in any of the three lines to serve the same purpose.</p>
+<figure style="margin: 20px auto; text-align: center;">
+  <img src="img/ch2-11.png" alt="case (d)" width="480">
+  <figcaption><b>(d) system diagram with Thyristor-Controlled Phase Angle Regulator in line AC</b></figcaption>
+</figure>
+In Figure (d), the regulator is installed in the third line to reduce the total phase angle difference along the line from 8.5 degrees to 4.26 degrees.
+<p>As before, a combination of mechanical and thyristor control of the phase-angle regulator may minimize cost.</p>
+</div>
+<!--
+<table style="border-collapse: collapse; width: 100%;">
+<tr>
+	<td style="border: none; width: 50%;">
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+If one of the generators is generating 2000 MW and the other 1000 MW, a total of 3000 MW would be delivered to the load center. For the impedances shown, the three lines would carry 600, 1600, and 1400 MW, respectively, as shown in Figure (a).
+<figure style="margin: 20px auto; text-align: center;">
+<img src="img/ch2-08.png" alt="case (a)" width="480">
+<figcaption><b>(a) system diagram</b></figcaption>
+</figure>
+<p>Such a situation would overload line BC (loaded at 1600 MW for its continuous rating of 1250 MW), and therefore generation would have to be decreased at B, and increased at A, in order to meet the load without overloading line BC.</p>
+</div>
+	</td>
+	<td style="border: none; width: 50%;">
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>If a capacitor whose reactance is - 5 ohms is inserted to line AC Figure (b), it reduces the line’s impedance from 10 Q to 5 Q, so that power flow through the lines AB, BC, and AC will be 250,1250, and 1750 MW, respectively.</p>
+<figure style="margin: 20px auto; text-align: center;">
+<img src="img/ch2-09.png" alt="case (b)" width="480">
+<figcaption><b>(b) system diagram with Thyristor-Controlled Series Capacitor in line AC</b></figcaption>
+</figure>
+It is clear that if the series capacitor is adjustable, then other power-flow levels may be realized in accordance with the ownership, contract, thermal limitations, transmission losses, and a wide range of load and generation schedules.
+</div>
+	</td>
+</tr>
+<tr>
+	<td style="border: none; width: 50%;">
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>Similar results may be obtained by increasing the impedance of one of the lines in the same meshed configuration by inserting a7 Q reactor (inductor) in series with line AB Figure (c).</p>
+<figure style="margin: 20px auto; text-align: center;">
+<img src="img/ch2-10.png" alt="case (c)" width="480">
+<figcaption><b>(c) system diagram with Thyristor-Controlled Series Reactor in line BC</b></figcaption>
+</figure>
+Again, a series inductor that is partly mechanically and partly thyristorcontrolled, it could serve to adjust the steady-state power flows as well as damp unwanted oscillations.
+</div>
+	</td>
+	<td style="border: none; width: 50%;">
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<p>As another option, a thyristor-controlled phase-angle regulator could be installed instead of a series capacitor or a series reactor in any of the three lines to serve the same purpose.</p>
+<figure style="margin: 20px auto; text-align: center;">
+<img src="img/ch2-11.png" alt="case (d)" width="480">
+<figcaption><b>(d) system diagram with Thyristor-Controlled Phase Angle Regulator in line AC</b></figcaption>
+</figure>
+In Figure (d), the regulator is installed in the third line to reduce the total phase angle difference along the line from 8.5 degrees to 4.26 degrees.
+<p>As before, a combination of mechanical and thyristor control of the phase-angle regulator may minimize cost.</p>
+</div>
+	</td>
+</tr>
+</table>
+-->
+<h2 id="limits-of-tl-loading-capability">Limits of TL loading capability</h2>
+<p>Basically, there are three kinds of limitations</p>
+<ul>
+<li><strong>Thermal</strong></li>
+<li><strong>Dielectric</strong></li>
+<li><strong>Stability</strong></li>
+</ul>
+<h3 id="thermal">Thermal</h3>
+<ul>
+<li>Thermal capability of an overhead line is a function of the ambient temperature, wind conditions, condition of the conductor, and ground clearance.</li>
+<li>It varies perhaps by a factor of 2 to 1 due to the variable environment and the loading history.</li>
+</ul>
+<h3 id="dielectric">Dielectric</h3>
+<ul>
+<li>Dielectric From an insulation point of view, many lines are designed very conservatively. For a given nominal voltage rating, it is often possible to increase normal operation by +10% voltage (i.e., 500 kV-550 kV) or even higher.</li>
+<li>Care is then needed to ensure that dynamic and transient over voltages are
+within limits.</li>
+</ul>
+<h3 id="stability">Stability</h3>
+<ul>
+<li>There are a number of stability issues that limit the transmission capability including:
+<ul>
+<li>Transient stability</li>
+<li>Dynamic stability</li>
+<li>Steady-state stability</li>
+<li>Frequency collapse</li>
+<li>Voltage collapse</li>
+<li>Sub synchronous resonance</li>
+</ul>
+</li>
+</ul>
+<h2 id="power-flow-and-dynamic-stability">Power Flow and Dynamic Stability</h2>
+<p>A simplified case of power flow on a transmission line shown in (a).</p>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-12.png" alt="Power Flow" width="480">
+	<figcaption><b>(a) simple two-machine system</b>
+	</figcaption>
+</figure>
+<p>Locations 1 and 2 could be any transmission substations connected by a transmission line.</p>
+<p>Substations may have loads, generation, or may be interconnecting points on the system and for simplicity they are assumed to be stiff busses. $E_1$ and $E_2$ are the magnitudes of the bus voltages with an angle $\delta$ between the two. The line is assumed to have inductive impedance $X$. and the line resistance and capacitance are ignored.</p>
+</div>
+<p>As shown in the phasor diagram (b) the driving voltage drop in the line is the phasor difference $E_L$ between the two line voltage phasors, $E_1$ and $E_2$.</p>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-13.png" alt="Phasor" width="480">
+	<figcaption><b> (b) current flow perpendicular to the driving voltage</b>
+	</figcaption>
+</figure>
+<p>The line current magnitude is given by:</p>
+<p>$$I=E_{L}/X,,\mathrm{and\ lags},E_{L},\mathrm{by},90^{\circ}$$</p>
+<p>The current flow phasor is perpendicular to the driving voltage (90° phase lag). If the angle between the two bus voltages is small, the current flow largely represents the active power.</p>
+<p>Increasing or decreasing the inductive impedance of a line will greatly affect the active power flow.</p>
+<p><strong>Thus impedance control</strong>, which in reality provides current control, can be the most cost effective means of controlling the power flow. With appropriate control loops, it can be used for power flow control and/or angle control for stability.</p>
+</div>
+<p>Figure (d) shows the half sinewave curve of active power increasing to a peak with an increase in $\delta$ to 90 degrees.</p>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-14.png" alt="Curve" width="480">
+	<figcaption><b> (d) power angle curves for different values of X</b>
+	</figcaption>
+</figure>
+<p>Power then falls with further increase in angle, and finally to zero at $\delta=180^{\circ}$.</p>
+<p>It is easy to appreciate that without high-speed control of any of the parameters $E_{1},;E_{2},;E_{1}-E_{2},;X\mathrm{,and};\delta$, the transmission line can be utilized only to a level well below that corresponding to 90 degrees.</p>
+<p>This is necessary, in order to maintain an adequate margin needed for transient and dynamic stability and to ensure that the system does not collapse following the outage of the largest generator and/or a line.</p>
+<p>Equations used:</p>
+<p>$$P_{1}=E_{1}\left(E_{2}\sin,\delta\right)/X$$</p>
+<p>$$P_{2}=E_{2}\left(E_{1}\sin;\delta\right)/X$$</p>
+<p>$$Q_{1}=E_{1}(E_{1}-E_{2}\cos\delta)/X$$</p>
+<p>$$Q_{2}=E_{2}\left(E_{2}-E_{1}\cos\delta\right)/X$$</p>
+</div>
+<p>Power/current flow can also be controlled by <strong>regulating the magnitude of voltage</strong> phasor $E_1$ or voltage phasor $E_2$.</p>
+<p>However, it is seen from (e) that with change in the magnitude of $E_1$ the magnitude of the driving voltage phasor $E_2 - E_2$ does not change by much, but its phase angle does.</p>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-15.png" alt="Phasor" width="480">
+	<figcaption><b> (e) regulating voltage magnitude mostly changes reactive power</b>
+	</figcaption>
+</figure>
+<p>This also means that regulation of the magnitude of voltage phasor $E_1$ and/or $E_2$ has much more <strong>influence over the reactive power flow</strong> than the active power flow.</p>
+</div>
+<p>Current flow and hence power flow can also be changed by <strong>injecting voltage in series with the line</strong>.</p>
+<div style='border-left: solid 1px; border-right: solid 1px; border-top: solid 1px; border-bottom: solid 1px; border-radius: 10px; padding:1em; margin: 20px auto;' markdown="1">
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-16.png" alt="Phasor" width="480">
+	<figcaption><b> (f) injecting voltage phasor in series with the line</b>
+	</figcaption>
+</figure>
+<p>It is seen from (f) that when the injected voltage is in phase quadrature with the current (which is approximately in phase with the driving voltage), it directly influences the magnitude of the current flow, and with small angle <strong>influences substantially the active power flow</strong>.</p>
+</div>
+<p>All of these can be completely achieved by FACTs:</p>
+<ul>
+<li>Impedance control</li>
+<li>Regulating the magnitude of voltage</li>
+<li>Injecting voltage in series with the line</li>
+</ul>
+<h2 id="basic-types-of-facts-controllers">Basic Types of FACTs Controllers</h2>
+<p><strong>FACTS</strong> is an acronym for Flexible AC Transmission System and it is an application of power electronic devices to electrical transmission system.</p>
+<p><strong>The IEEE definition for FACTS controller is stated as</strong>, it is a power electronic based system and other static equipment that provides the control of one or more AC transmission parameters (such as voltage, impedance, phase angle and power).</p>
+<p>In general, FACTS Controllers can be divided into four categories:</p>
+<ul>
+<li>Series Controllers</li>
+<li>Shunt Controllers</li>
+<li>Combined series-series Controllers</li>
+<li>Combined series-shunt Controllers</li>
+</ul>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-17.webp" alt="Types of FACTs Controllers" width="480">
+	<figcaption><b>Types of FACTs Controllers</b>
+	</figcaption>
+</figure>
+<h3 id="series-controllers">Series Controllers</h3>
+<p>In this, various compensation or FACTS devices (which can be either switched or controlled) are connected in series with the transmission lines at particular nodes.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-18.jpeg" alt="Types of FACTs Controllers" width="480">
+</figure>
+<p>This compensation will give more control of power flow through the line and also improves the dynamic stability limit of the power system.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-19.jpg" alt="Types of FACTs Controllers" width="480">
+</figure>
+<p>These controllers could be variable impedance such as a reactor or capacitor or a power electronic based variable source. Examples of the series controllers include SSSC, TCSR, IPFC, TSSC, TCSC, and TCSR.</p>
+<h3 id="shunt-controllers">Shunt Controllers</h3>
+<p>These controllers inject a current into the system at the point of connection. If this current is in phase quadrature with the line voltage, a shunt controller consumes or supplies variable reactive power to the network.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-20.jpg" alt="Types of FACTs Controllers" width="480">
+</figure>
+Similar to the series connected controllers, these controllers could be a variable reactor or capacitor or a power electronic based variable source. Examples of the shunt controllers include TCR, STATCOM, TSR, TCBR and TSC.
+<h3 id="combined-series-series-controllers">Combined series-series controllers</h3>
+<p>These controllers are the combination of individual series controllers that are controlled in a coordinated manner in multiple power transmission systems.</p>
+<p>Or these could be a unified controllers in which separate series controllers are employed in each line for series reactive power compensation and also to transfer the real power among the lines via proper link.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-21.jpg" alt="Types of FACTs Controllers" width="480">
+</figure>
+<p>Example of this controller is IPFC that balances the real and reactive power flow in the lines in order to maximize the power transmission.</p>
+<h3 id="combined-series-shunt-controllers">Combined series-shunt controllers</h3>
+<p>These are the combination of separate series and shunt controllers that are controlled in a coordinate manner or a unified power flow controller (UPFC) with series and shunt elements.</p>
+<p>These combined controllers inject current into the system with series part of the controller and voltage in series in the line with shunt part of the controller.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-22.jpg" alt="Types of FACTs Controllers" width="660">
+</figure>
+<p>Examples of these controllers include TCPST, UPFC and TCPAR.</p>
+<h3 id="thyristor-controlled-reactor-tcr">Thyristor controlled Reactor (TCR)</h3>
+<p>It consists of a fixed reactor in series with bidirectional thyristor switches.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-23.jpg" alt="Types of FACTs Controllers" width="200">
+</figure>
+<p>The impedance of this device varied in a continuous manner by varying the conduction angles of thyristors.</p>
+<h3 id="thyristor-switched-reactor-tsr">Thyristor Switched Reactor (TSR)</h3>
+<p>It is a special case of a TCR where phase control of the current is not exercised, instead the reactor is switched such that thyristors are either fully ON or OFF as in case of TSC.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-23.jpg" alt="Types of FACTs Controllers" width="200">
+</figure>
+<p>The advantage of TSR over TCR is that no harmonics current generation.</p>
+<p>Also, this controller use thyristors without firing control and hence lower cost and losses.</p>
+<h3 id="thyristor-switched-capacitor-tsc">Thyristor Switched Capacitor (TSC)</h3>
+<p>It consists of a shunt connected capacitor which is connected in series with bidirectional thyristor switches.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-24.jpg" alt="Types of FACTs Controllers" width="200">
+</figure>
+<p>The impedance or reactance of this device is varied in stepwise manner by controlling the thyristors either in a zero or full conduction operation. This controller offers no harmonics, no transients and low losses.</p>
+<h3 id="static-var-compensator">Static Var Compensator</h3>
+<p>It is a shunt type controller which controls the power flow in transmission system and improves the transient stability of power grids.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-25.jpg" alt="Types of FACTs Controllers" width="360">
+</figure>
+This controller regulates the voltage at its terminals by controlling the amount of reactive power injected into or absorbed from the power system.
+<h3 id="statcom">STATCOM</h3>
+<p>STATCOM means static synchronous compensator and it has the similar characteristics to that of synchronous condenser but it has no inertia as it is an electronic device.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-26.jpg" alt="Types of FACTs Controllers" width="360">
+</figure>
+<p>It consists of a solid state voltage source inverter coupled with a transformer and this arrangement is tied to a transmission line.</p>
+<p>This arrangement supplies or draws reactive power at a faster rate compared with synchronous motor condenser.</p>
+<h3 id="thyristor-controlled-series-capacitor-tcsc">Thyristor Controlled Series Capacitor (TCSC)</h3>
+<p>It is a capacitive reactance compensator.</p>
+<p>It consists of a series capacitor bank which connected in parallel with a thyristor controlled reactor that provides a smooth variable series capacitive reactance.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-27.jpg" alt="Types of FACTs Controllers" width="360">
+</figure>
+<p>The total impedance of the system can be varied by changing the conduction angle of the thyristors and hence the circuit becomes either inductive or capacitive.</p>
+<p>If the total circuit impedance is inductive, the fault current is limited by this controller.</p>
+<h3 id="thyristor-controlled-series-reactor-tcsr">Thyristor Controlled Series Reactor (TCSR)</h3>
+<p>It is an inductive reactance compensator which consists of a series reactor in parallel with thyristor switched reactor. This controller provides a smooth variable inductive reactance.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-28.jpg" alt="Types of FACTs Controllers" width="360">
+</figure>
+<p>When the thyristors firing angle is 1800, the reactor stops conducting and hence the uncontrolled reactor only is in series with the line that acts as a fault current limiter.</p>
+<p>If the firing angle is below 1800, the net (or overall) inductance decreases, thereby voltage is controlled in the network.</p>
+<h3 id="thyristor-switched-series-reactor-tssr">Thyristor Switched Series Reactor (TSSR)</h3>
+<p>Similar to TCSR, TSSR is also an inductive reactance compensator but it provides the stepwise control.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-28.jpg" alt="Types of FACTs Controllers" width="360">
+</figure>
+<p>This controller switches thyristors such that they are either fully ON or fully OFF in order to achieve stepped series inductance.</p>
+<h3 id="static-series-synchronous-compensator-sssc">Static Series Synchronous Compensator (SSSC)</h3>
+<p>It is a series version of STATCOM and it is an advanced kind of control series compensation.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-29.webp" alt="Types of FACTs Controllers" width="360">
+</figure>
+<p>It produces the output voltage in quadrature with the line current such that the overall reactive voltage drop across the line is increased or decreased.</p>
+<p>Although it is like a STATCOM, the output voltage is in series with the line and hence it controls the voltage across the line, so its impendence.</p>
+<p>It has a capability to induce both inductive and capacitive voltage in series with the line and hence the power control.</p>
+<h3 id="unified-power-flow-controller-upfc">Unified Power Flow Controller (UPFC)</h3>
+<p>UPFC is the combination of STATCOM and SSSC which are coupled by via a common DC link.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-30.jpg" alt="Types of FACTs Controllers" width="480">
+</figure>
+<p>It can exhibit the characteristics of both SSSC with series voltage injection and STATCOM with shunt current injection, with added features.</p>
+<p>It has a unique ability to perform independent control of real and reactive power flow</p>
+<p>Also, these can be controlled to provide concurrent reactive and real power series line compensation without use of an external energy source.</p>
+<h3 id="interline-power-flow-controller-ipfc">Interline Power Flow Controller (IPFC)</h3>
+<p>It is the new technique for effective power flow and compensation management of multiline transmission systems.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-31.jpg" alt="Types of FACTs Controllers" width="480">
+</figure>
+<p>It consists of a number of converters which are connected with a common DC link and each converter is provided for series compensation for a selected transmission line.</p>
+<p>In addition to the reactive power compensation, this controller can able to transfer real power among the transmission lines due to a common DC link.</p>
+<p>So it is possible to equalize both real and reactive power between the lines.</p>
+<h2 id="power-electronics-in-facts">Power Electronics in FACTs</h2>
+<p>Power electronics have a widely spread range of applications from electrical machine drives to excitation systems, industrial high current rectifiers for metal smelters, frequency controllers or electrical trains.</p>
+<p>FACTS-devices are just one application beside others, but use the same technology trends.</p>
+<p>It has started with the first Thyristor rectifiers in 1965 and goes to the nowadays modularized IGBT or IGCT voltage source converters.</p>
+<p>Since the first development of a Thyristor by General Electric in 1957, the targets for power semiconductors are low switching losses for high switching rates and minimal conduction losses.</p>
+<p>The innovation in the FACTS area is mainly driven by these developments. Today, there are Thyristor and Transistor technologies available.</p>
+<h3 id="thyristor">Thyristor</h3>
+<p>The Thyristor is a device, which can be triggered with a pulse at the gate and remains in the on-stage until the next current zero crossing.</p>
+<p>Therefore only one switching per half-cycle is possible, which limits the controllability.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-32.png" alt="" width="480">
+	<figcaption><b>I-V Characteristics Curves</b>
+	</figcaption>
+</figure>
+<p>Thyristors have the highest current and blocking voltage. This means that fewer semiconductors need to be used for an application.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-34.png" alt="" width="480">
+	<figcaption><b>Phase Control</b>
+	</figcaption>
+</figure>
+<p>Thyristors are used as switches for capacities or inductances, in converters for reactive power compensators or as protection switches for less robust power converters.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-33.png" alt="" width="480">
+	<figcaption><b>A Thyristor Two Transistor Analogy</b>
+	</figcaption>
+</figure>
+<p>The Thyristors are still the devices for applications with the highest voltage and power levels. They are part of the mostly used FACTS-devices up to the biggest HVDC-Transmissions with a voltage level above 500 kV and power above 3000 MVA.</p>
+<h3 id="thyristor-and-gto">Thyristor and GTO</h3>
+<p>A normal thyristor or conventional thyristor is used as an ideal switch for power electronic circuits. However, for turning off the device, a communication circuit is required, which increases the complexity and weight of the circuit.</p>
+<p>To overcome these limitations, the Gate Turn-Off Thyristor (GTO) was introduced. GTOs use a gate signal to turn on and off, eliminating the need for a communication circuit.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-37.jpg" alt="" width="480">
+	<figcaption><b>Principle of Operation</b>
+	</figcaption>
+</figure>
+<h4 id="turn-on-operation">Turn-On Operation</h4>
+<p>The turn-on operation of a GTO is similar to that of a conventional thyristor. When a positive gate signal is applied, the hole current injection from the gate forward biases the cathode p-base junction. This results in the emission of electrons from the cathode towards the anode terminal, inducing hole injection from the anode terminal into the base region. This injection of holes and electrons continues until the GTO comes into the conduction state.</p>
+<p>In contrast, the conduction in a thyristor starts initially by turning on the area of the cathode adjacent to the gate terminal. The remaining area comes into conduction by plasma spreading.</p>
+<h4 id="turn-off-operation">Turn-Off Operation</h4>
+<p>To turn off a conducting GTO, a reverse bias is applied at the gate by making the gate negative with respect to the cathode. A part of the holes from the P base layer is extracted through the gate, which suppresses the injection of electrons from the cathode. In response to this, more hole current is extracted through the gate, resulting in more suppression of electrons from the cathode. Eventually, the voltage drop across the p base junction causes the gate cathode junction to reverse bias, turning off the GTO.</p>
+<p>The GTO can be turned off by the application of reverse gate current, which can be either step or ramp drive. The GTO can be turned off without reversing the anode voltage. During turn-off, the GTO can block a rated forward voltage only.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-38.png" alt="" width="480">
+</figure>
+<h4 id="comparison-with-thyristor">Comparison with Thyristor</h4>
+<p>Compared to thyristors, GTOs have the following advantages:</p>
+<ul>
+<li>No communication circuit is required for turning off the device.</li>
+<li>GTOs can be turned off by the application of reverse gate current, which can be either step or ramp drive.</li>
+<li>GTOs can be turned off without reversing the anode voltage.</li>
+</ul>
+<p>However, GTOs also have some limitations:</p>
+<ul>
+<li>GTOs have a lower voltage rating than thyristors.</li>
+<li>GTOs have a lower current rating than thyristors.</li>
+<li>GTOs have a higher on-state voltage drop than thyristors.</li>
+<li>The drive circuit for GTOs is more difficult than for thyristors.</li>
+</ul>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-36.jpg" alt="" width="480">
+	<figcaption><b>GTO I-V Characteristics</b>
+	</figcaption>
+</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-32.png" alt="" width="480">
+	<figcaption><b>Thyristor I-V Characteristics</b>
+	</figcaption>
+</figure></td>
+	</tr>
+</table>
+<h3 id="bjt-and-igbt">BJT and IGBT</h3>
+<p>Bipolar Junction Transistor (BJT) and Insulated Gate Bipolar Transistor (IGBT) are two types of transistors that are used in electronic circuits to control the currents.</p>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-39.png" alt="" width="480">
+</figure>
+<h4 id="bjt">BJT</h4>
+<p>BJT stands for Bipolar Junction Transistor. The BJT is a three layer, three terminal semiconductor device which is used in the electronic circuit for switching and amplification of signals</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-40.png" alt="" width="300">
+</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-42.png" alt="" width="480">
+</figure></td>
+	</tr>
+</table>
+<h4 id="igbt">IGBT</h4>
+<p>IGBT stands for Insulated Gate Bipolar Transistor. An IGBT is also a three terminal semiconductor device used for switching purposes. The IGBT is a type of transistor that has ability to handle large amount of power and has high switching speed which makes it more efficient than a BJT. The three terminals of the IGBT are: emitter (E), gate (G) and collector (C).</p>
+<table style="margin: 20px auto;">
+	<tr>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-41.png" alt="" width="300">
+</figure></td>
+		<td><figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-43.jpeg" alt="" width="480">
+</figure></td>
+	</tr>
+</table>
+<h3 id="comparisons">Comparisons</h3>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-44.png" alt="" width="720">
+	<figcaption><b>Ranges of converter voltages and power of applications for power semiconductors</b>
+	</figcaption>
+</figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">Thyristor</th>
+<th style="text-align:center">GTO</th>
+<th style="text-align:center">BJT</th>
+<th style="text-align:center">MOSFET</th>
+<th style="text-align:center">IGBT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Availability</td>
+<td style="text-align:center">Early 60s</td>
+<td style="text-align:center">Mid 80s</td>
+<td style="text-align:center">Late 70s</td>
+<td style="text-align:center">Early 80s</td>
+<td style="text-align:center">Late 80s</td>
+</tr>
+<tr>
+<td style="text-align:center">Voltage Ratings</td>
+<td style="text-align:center">5kV</td>
+<td style="text-align:center">5kV</td>
+<td style="text-align:center">1kV</td>
+<td style="text-align:center">500V</td>
+<td style="text-align:center">3.3kV</td>
+</tr>
+<tr>
+<td style="text-align:center">Current Ratings</td>
+<td style="text-align:center">4kA</td>
+<td style="text-align:center">5kA</td>
+<td style="text-align:center">400A</td>
+<td style="text-align:center">200A</td>
+<td style="text-align:center">1.2kA</td>
+</tr>
+<tr>
+<td style="text-align:center">Switching Frequencies</td>
+<td style="text-align:center">low</td>
+<td style="text-align:center">2kHz</td>
+<td style="text-align:center">5kHz</td>
+<td style="text-align:center">1MHz</td>
+<td style="text-align:center">100kHz</td>
+</tr>
+<tr>
+<td style="text-align:center">On-state voltage drop</td>
+<td style="text-align:center">2V</td>
+<td style="text-align:center">2-3V</td>
+<td style="text-align:center">1-2V</td>
+<td style="text-align:center">I*Rds(on) 4.5V</td>
+<td style="text-align:center">2-3V</td>
+</tr>
+<tr>
+<td style="text-align:center">Drive Circuit</td>
+<td style="text-align:center">Simple</td>
+<td style="text-align:center">Very difficult</td>
+<td style="text-align:center">Difficult</td>
+<td style="text-align:center">Very simple</td>
+<td style="text-align:center">Very simple</td>
+</tr>
+<tr>
+<td style="text-align:center">Comments</td>
+<td style="text-align:center">Cannot turn-off using gate signals</td>
+<td style="text-align:center">King in very high power</td>
+<td style="text-align:center">Phasing out in new products</td>
+<td style="text-align:center">Good performance in high frequency</td>
+<td style="text-align:center">Best overall performance</td>
+</tr>
+</tbody>
+</table>
+<center><b>Table comparing different types of power electronic devices based on various parameters</b></center>
+<h2 id="practical-cases">Practical Cases</h2>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-45.svg" alt="" width="720">
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-46.svg" alt="" width="720">
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-47.svg" alt="" width="720">
+</figure>
+<figure style="margin: 20px auto; text-align: center;">
+	<img src="img/ch2-48.svg" alt="" width="720">
+</figure>
+
+</body>
+</html>
